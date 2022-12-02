@@ -1,6 +1,10 @@
-﻿Console.WriteLine("Mickur's Advent of Code 2022 - Day 2!");
+﻿using System.Diagnostics;
+
+Console.WriteLine("Mickur's Advent of Code 2022 - Day 2!");
 
 // Setup
+var stopWatch = new Stopwatch();
+
 var points = 0;
 
 const int rockValue = 1;
@@ -10,6 +14,8 @@ const int scissorValue = 3;
 const int lossValue = 0;
 const int drawValue = 3;
 const int winValue = 6;
+
+stopWatch.Start();
 
 // Part One: Second column is what you're going to play
 foreach (var line in File.ReadLines("input.txt"))
@@ -84,6 +90,10 @@ foreach (var line in File.ReadLines("input.txt"))
 
 Console.WriteLine($"Part 1: Your total score was: {points}");
 
+stopWatch.Stop();
+Console.WriteLine($"Part 1:  {stopWatch.ElapsedMilliseconds} ms ({stopWatch.ElapsedTicks:n0} ticks)");
+stopWatch.Restart();
+
 // Part Two: Seconds column is the result of the game
 points = 0;
 
@@ -156,3 +166,6 @@ foreach (var line in File.ReadLines("input.txt"))
     }
 
 Console.WriteLine($"Part 2: Your total score was: {points}");
+
+stopWatch.Stop();
+Console.WriteLine($"Part 2:  {stopWatch.ElapsedMilliseconds} ms ({stopWatch.ElapsedTicks:n0} ticks)");
