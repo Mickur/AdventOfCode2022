@@ -35,7 +35,7 @@ foreach (var line in File.ReadLines("input.txt"))
                     points += paperValue + winValue;
                     break;
 
-                // You play scizzor
+                // You play scissor
                 case 'Z':
                     points += scissorValue + lossValue;
                     break;
@@ -57,7 +57,7 @@ foreach (var line in File.ReadLines("input.txt"))
                     points += paperValue + drawValue;
                     break;
 
-                // You play scizzor
+                // You play scissor
                 case 'Z':
                     points += scissorValue + winValue;
                     break;
@@ -65,7 +65,7 @@ foreach (var line in File.ReadLines("input.txt"))
 
             break;
 
-        // Enemy plays scizzor
+        // Enemy plays scissor
         case 'C':
             switch (line[2])
             {
@@ -79,7 +79,7 @@ foreach (var line in File.ReadLines("input.txt"))
                     points += paperValue + lossValue;
                     break;
 
-                // You play scizzor
+                // You play scissor
                 case 'Z':
                     points += scissorValue + drawValue;
                     break;
