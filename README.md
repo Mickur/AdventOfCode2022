@@ -5,3 +5,4 @@ Uh, hi. Hello!
 ## Status
 
 - Day 1: Completed
+- Day 2: Completed
