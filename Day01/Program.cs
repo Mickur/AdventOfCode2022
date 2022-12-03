@@ -1,40 +1,34 @@
-﻿using System.Diagnostics;
-
-Console.WriteLine("Mickur's Advent of Code 2022 - Day 1!");
+﻿Console.WriteLine("Mickur's Advent of Code 2022 - Day 1!");
 
 // Setup
-var stopWatch = new Stopwatch();
+var input = File.ReadAllLines("input.txt");
 
 var currentElfCalories = 0;
-var gold = 0;
-var silver = 0;
-var bronze = 0;
+var placement = new int[3];
 
-stopWatch.Start();
-
-foreach (var line in File.ReadLines("input.txt"))
+foreach (var line in input)
     if (string.IsNullOrWhiteSpace(line))
     {
         // Are we top 3!?
-        if (currentElfCalories > bronze)
+        if (currentElfCalories > placement[2])
         {
             // Do we beat gold?
-            if (currentElfCalories >= gold)
+            if (currentElfCalories >= placement[0])
             {
-                bronze = silver;
-                silver = gold;
-                gold = currentElfCalories;
+                placement[2] = placement[1];
+                placement[1] = placement[0];
+                placement[0] = currentElfCalories;
             }
             // Or do we beat silver?
-            else if (currentElfCalories >= silver)
+            else if (currentElfCalories >= placement[1])
             {
-                bronze = silver;
-                silver = currentElfCalories;
+                placement[2] = placement[1];
+                placement[1] = currentElfCalories;
             }
             // I guess we only beat bronze. Well, it's something!
             else
             {
-                bronze = currentElfCalories;
+                placement[2] = currentElfCalories;
             }
         }
 
@@ -53,15 +47,8 @@ foreach (var line in File.ReadLines("input.txt"))
         currentElfCalories += lineValue;
     }
 
-stopWatch.Stop();
-Console.WriteLine($"Parsed input in {stopWatch.ElapsedMilliseconds} ms ({stopWatch.ElapsedTicks:n0} ticks)");
-stopWatch.Restart();
-
 // Part One: Find elf carrying the most
-Console.WriteLine($"Part 1: The elf carrying the most calories has {gold} calories");
+Console.WriteLine($"Part 1: The elf carrying the most calories has {placement[0]} calories");
 
 // Part Two: Find top 3 elves carrying the most
-Console.WriteLine($"Part 2: The three elves that are carrying the most calories have {gold + silver + bronze} calories total");
-
-stopWatch.Stop();
-Console.WriteLine($"Printed answers in {stopWatch.ElapsedMilliseconds} ms ({stopWatch.ElapsedTicks:n0} ticks)");
+Console.WriteLine($"Part 2: The three elves that are carrying the most calories have {placement[0] + placement[1] + placement[2]} calories total");

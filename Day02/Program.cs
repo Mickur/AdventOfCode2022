@@ -1,6 +1,8 @@
 ﻿Console.WriteLine("Mickur's Advent of Code 2022 - Day 2!");
 
 // Setup
+var input = File.ReadAllLines("input.txt");
+
 var partOnePoints = 0;
 var partTwoPoints = 0;
 
@@ -14,7 +16,7 @@ const int winValue = 6;
 
 // Part One: Second column is what you're going to play
 // Part Two: Seconds column is the result of the game
-foreach (var line in File.ReadLines("input.txt"))
+foreach (var line in input)
     switch (line[0])
     {
         // Enemy plays rock
