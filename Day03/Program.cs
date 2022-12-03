@@ -1,90 +1,56 @@
 ﻿Console.WriteLine("Mickur's Advent of Code 2022 - Day 3!");
 
 // Setup
-var wrongList = new List<int>();
+var input = File.ReadAllLines("input.txt");
 
 // Part One: ...
-foreach (var line in File.ReadLines("input.txt"))
+var wrongList = new List<int>();
+foreach (var line in input)
 {
-    var firstCompartment = new List<int>();
-    var secondCompartment = new List<int>();
-    
-    int compartmentlength = line.Length / 2;
+    var found = false;
+    var compartmentLength = line.Length / 2;
 
-    for (int i = 0; i < line.Length; i++)
+    for (var i = 0; i < compartmentLength; i++)
     {
-        int characterValue = Char.IsLower(line[i]) ? line[i] - 'a' + 1 : line[i] - 'A' + 27;
-        
-        if (i < compartmentlength)
-        {
-            firstCompartment.Add(characterValue);
-        }
-        else
-        {
-            secondCompartment.Add(characterValue);
-        }
-    }
+        if (found)
+            break;
 
-    var intersect = firstCompartment.Intersect(secondCompartment);
+        for (var j = 0; j < compartmentLength; j++)
+        {
+            if (found)
+                break;
 
-    foreach (var value in intersect)
-    {
-        wrongList.Add(value);
+            if (line[i] == line[j + compartmentLength])
+            {
+                var characterValue = char.IsLower(line[i]) ? line[i] - 'a' + 1 : line[i] - 'A' + 27;
+                wrongList.Add(characterValue);
+                found = true;
+            }
+        }
     }
 }
 
-Console.WriteLine(wrongList.Sum());
+Console.WriteLine($"Part 1: {wrongList.Sum()}");
 
 // Part Two: ...
 var badgeList = new List<int>();
 
-var firstElfList = new List<int>();
-var secondElfList = new List<int>();
-var thirdElfList = new List<int>();
-
-var currentLine = 0;
-
-foreach (var line in File.ReadLines("input.txt"))
+for (var i = 0; i < input.Length;)
 {
-    var currentElf = currentLine % 3;
-    
-    for (int i = 0; i < line.Length; i++)
+    var elvesRucksacks = new[]
     {
-        var characterValue = char.IsLower(line[i]) ? line[i] - 'a' + 1 : line[i] - 'A' + 27;
-        
-        switch (currentElf)
-        {
-            case 0:
-                firstElfList.Add(characterValue);
-                break;
-            
-            case 1:
-                secondElfList.Add(characterValue);
-                break;
-            
-            case 2:
-                thirdElfList.Add(characterValue);
-                break;
-        }
-    }
+        input[i++],
+        input[i++],
+        input[i++]
+    };
 
-    if (currentElf == 2)
-    {
-        // Find intersections
-        var intersectOne = firstElfList.Intersect(secondElfList).ToList();
-        var intersectTwo = intersectOne.Intersect(thirdElfList).ToList();
-        foreach (var value in intersectTwo)
+    foreach (var character in elvesRucksacks[0])
+        if (elvesRucksacks[1].Contains(character) && elvesRucksacks[2].Contains(character))
         {
-            badgeList.Add(value);
+            var characterValue = char.IsLower(character) ? character - 'a' + 1 : character - 'A' + 27;
+            badgeList.Add(characterValue);
+            break;
         }
-            
-        // Prepare for a new set of elves
-        firstElfList = new List<int>();
-        secondElfList = new List<int>();
-        thirdElfList = new List<int>();
-    }
-
-    currentLine++;
 }
 
-Console.WriteLine(badgeList.Sum());
+Console.WriteLine($"Part 2: {badgeList.Sum()}");
