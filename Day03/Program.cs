@@ -35,17 +35,10 @@ Console.WriteLine($"Part 1: {wrongList.Sum()}");
 // Part Two: ...
 var badgeList = new List<int>();
 
-for (var i = 0; i < input.Length;)
+for (var i = 0; i < input.Length; i+=3)
 {
-    var elvesRucksacks = new[]
-    {
-        input[i++],
-        input[i++],
-        input[i++]
-    };
-
-    foreach (var character in elvesRucksacks[0])
-        if (elvesRucksacks[1].Contains(character) && elvesRucksacks[2].Contains(character))
+    foreach (var character in input[i])
+        if (input[i+1].Contains(character) && input[i+2].Contains(character))
         {
             var characterValue = char.IsLower(character) ? character - 'a' + 1 : character - 'A' + 27;
             badgeList.Add(characterValue);
