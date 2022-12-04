@@ -8,19 +8,42 @@ var counter2 = 0;
 
 foreach (var line in input)
 {
-    var split1 = line.Split(',');
-
-    // Elf 1
-    var elf1Split = split1[0].Split('-');
+    var parseDestination = 0;
     
-    var elf1Start = AoCUtils.Parsing.FastIntParse(elf1Split[0]);
-    var elf1Stop = AoCUtils.Parsing.FastIntParse(elf1Split[1]);
+    var elf1Start = 0;
+    var elf1Stop = 0;
+    var elf2Start = 0;
+    var elf2Stop = 0;
 
-    // Elf 2
-    var elf2Split = split1[1].Split('-');
+    var parseValue = 0;
     
-    var elf2Start = AoCUtils.Parsing.FastIntParse(elf2Split[0]);
-    var elf2Stop = AoCUtils.Parsing.FastIntParse(elf2Split[1]);
+    for (var i = 0; i <= line.Length; i++)
+    {
+        if (i >= line.Length || line[i] is '-' or ',')
+        {
+            switch (parseDestination)
+            {
+                case 0:
+                    elf1Start = parseValue;
+                    break;
+                case 1:
+                    elf1Stop = parseValue;
+                    break;
+                case 2:
+                    elf2Start = parseValue;
+                    break;
+                case 3:
+                    elf2Stop = parseValue;
+                    break;
+            }
+            parseDestination++;
+            parseValue = 0;
+        }
+        else
+        {
+            parseValue = parseValue * 10 + (line[i] - '0');
+        }
+    }
 
     // Part One: ...
     var elfOneCompletelyInTwo = elf2Start <= elf1Start && elf2Stop >= elf1Stop;
@@ -45,5 +68,6 @@ foreach (var line in input)
         counter2++;
     }
 }
+
 Console.WriteLine(counter1);
 Console.WriteLine(counter2);
