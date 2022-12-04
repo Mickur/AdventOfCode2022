@@ -13,32 +13,14 @@ foreach (var line in input)
     // Elf 1
     var elf1Split = split1[0].Split('-');
     
-    var parseValue = 0;
-    foreach (var c in elf1Split[0])
-        parseValue = parseValue * 10 + (c - '0');
-
-    var elf1Start = parseValue;
-    
-    parseValue = 0;
-    foreach (var c in elf1Split[1])
-        parseValue = parseValue * 10 + (c - '0');
-
-    var elf1Stop = parseValue;
+    var elf1Start = AoCUtils.Parsing.FastIntParse(elf1Split[0]);
+    var elf1Stop = AoCUtils.Parsing.FastIntParse(elf1Split[1]);
 
     // Elf 2
     var elf2Split = split1[1].Split('-');
     
-    parseValue = 0;
-    foreach (var c in elf2Split[0])
-        parseValue = parseValue * 10 + (c - '0');
-
-    var elf2Start = parseValue;
-    
-    parseValue = 0;
-    foreach (var c in elf2Split[1])
-        parseValue = parseValue * 10 + (c - '0');
-
-    var elf2Stop = parseValue;
+    var elf2Start = AoCUtils.Parsing.FastIntParse(elf2Split[0]);
+    var elf2Stop = AoCUtils.Parsing.FastIntParse(elf2Split[1]);
 
     // Part One: ...
     var elfOneCompletelyInTwo = elf2Start <= elf1Start && elf2Stop >= elf1Stop;

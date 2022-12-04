@@ -6,8 +6,10 @@ var input = File.ReadAllLines("input.txt");
 var currentElfCalories = 0;
 var placement = new int[3];
 
-foreach (var line in input)
-    if (string.IsNullOrWhiteSpace(line))
+for (var i = 0; i <= input.Length; i++)
+{
+    // Since ReadAllLines ignores the last empty line, just check if i is out of range, ezpz.
+    if (i >= input.Length || string.IsNullOrWhiteSpace(input[i]))
     {
         // Are we top 3!?
         if (currentElfCalories > placement[2])
@@ -36,16 +38,9 @@ foreach (var line in input)
     }
     else
     {
-        // Micro-optimization, GOTTA GO FAST!
-        // currentElfCalories += int.Parse(line); // Old, super slow code!
-
-        var lineValue = 0;
-
-        foreach (var c in line)
-            lineValue = lineValue * 10 + (c - '0');
-
-        currentElfCalories += lineValue;
+        currentElfCalories += AoCUtils.Parsing.FastIntParse(input[i]);
     }
+}
 
 // Part One: Find elf carrying the most
 Console.WriteLine($"Part 1: The elf carrying the most calories has {placement[0]} calories");
