@@ -21,11 +21,11 @@ for (var i = 0; i < input.Length; i++)
     {
         var valueIndex = j * 4 + 1;
         
-        // If valueIndex is out of range, continue.
+        // If valueIndex is out of range, continue outer loop.
         if (valueIndex >= input[i].Length)
-            continue;
+            break;
         
-        // If valueIndex contains an integer, we are done.
+        // If valueIndex contains an integer, we are done and should break out of both loops.
         if (char.IsDigit(input[i][valueIndex]))
         {
             stackParseComplete = true;
@@ -61,39 +61,30 @@ for (var i = instructionsBegin; i < input.Length; i++)
     var move = AoCUtils.Parsing.FastIntParse(split[1]);
     var from = AoCUtils.Parsing.FastIntParse(split[3]);
     var to = AoCUtils.Parsing.FastIntParse(split[5]);
-
-    // Part One
+    
     for (var j = 0; j < move; j++)
     {
-        var lastIndex = stacks1[from - 1].Count - 1;
-        var temp = stacks1[from - 1][lastIndex];
-        stacks1[from - 1].RemoveAt(lastIndex);
+        // Part One
+        var index = stacks1[from - 1].Count - 1;
+        var temp = stacks1[from - 1][index];
+        stacks1[from - 1].RemoveAt(index);
         stacks1[to-1].Add(temp);
         
-    }
-    
-    // Part Two
-    for (var j = move; j > 0; j--)
-    {
-        var currIndex = stacks2[from - 1].Count - j;
-        var temp = stacks2[from - 1][currIndex];
-        stacks2[from - 1].RemoveAt(currIndex);
+        // Part two
+        index = stacks2[from - 1].Count - (move - j);
+        temp = stacks2[from - 1][index];
+        stacks2[from - 1].RemoveAt(index);
         stacks2[to-1].Add(temp);
     }
 }
 
-// Part One: ...
+// Results
 var answer = "";
 foreach (var stack in stacks1)
-{
     answer += stack[^1];
-}
-Console.WriteLine(answer);
+Console.WriteLine($"Answer to part one: {answer}");
 
-// Part Two: ...
 answer = "";
 foreach (var stack in stacks2)
-{
     answer += stack[^1];
-}
-Console.WriteLine(answer);
+Console.WriteLine($"Answer to part two: {answer}");
