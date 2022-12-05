@@ -6,7 +6,7 @@
 | Day 2  | Completed     | Unknown                   |
 | Day 3  | Completed     | 15                        |
 | Day 4  | Completed     | 13                        |
-| Day 5  | Not Completed | -                         |
+| Day 5  | Completed     | 12                        |
 | Day 6  | Not Completed | -                         |
 | Day 7  | Not Completed | -                         |
 | Day 8  | Not Completed | -                         |
