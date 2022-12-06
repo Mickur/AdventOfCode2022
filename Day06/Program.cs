@@ -2,13 +2,13 @@
 
 Console.WriteLine("Mickur's Advent of Code 2022 - Day 6!");
 
-var sw = new Stopwatch();
-sw.Start();
-
 // Setup
 var input = File.ReadAllLines("input.txt");
 const int partOneUniquesNeeded = 4;
 const int partTwoUniquesNeeded = 14;
+
+var sw = new Stopwatch();
+sw.Start();
 
 var queue = new Queue<char>();
 var uniqueCheckHashSet = new HashSet<char>();
