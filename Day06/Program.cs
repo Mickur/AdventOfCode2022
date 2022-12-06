@@ -12,56 +12,46 @@ sw.Start();
 
 var queue = new Queue<char>();
 var uniqueCheckHashSet = new HashSet<char>();
-var answerFound = false;
+var allUnique = false;
 
 for (var i = 0; i < input[0].Length; i++)
 {
-    if (answerFound)
-        break;
-    
-    switch (queue.Count)
+    uniqueCheckHashSet.Clear();
+    for (var j = 0; j < partOneUniquesNeeded; j++)
     {
-        case < partOneUniquesNeeded:
-            queue.Enqueue(input[0][i]);
-            continue;
-        case >= partOneUniquesNeeded:
-            queue.Dequeue();
-            queue.Enqueue(input[0][i]);
-        
-            uniqueCheckHashSet.Clear();
-            if (queue.All(x => uniqueCheckHashSet.Add(x)))
-            {
-                Console.WriteLine($"Answer to part one: {i + 1}");
-                answerFound = true;
-            }
+        if (uniqueCheckHashSet.Add(input[0][i + j]) == false)
             break;
+
+        if (j == partOneUniquesNeeded - 1)
+            allUnique = true;
+    }
+
+    if (allUnique)
+    {
+        Console.WriteLine($"Answer to part one: {i + partOneUniquesNeeded}");
+        break;
     }
 }
 
 queue.Clear();
-answerFound = false;
+allUnique = false;
 
 for (var i = 0; i < input[0].Length; i++)
 {
-    if (answerFound)
-        break;
-    
-    switch (queue.Count)
+    uniqueCheckHashSet.Clear();
+    for (var j = 0; j < partTwoUniquesNeeded; j++)
     {
-        case < partTwoUniquesNeeded:
-            queue.Enqueue(input[0][i]);
-            continue;
-        case >= partTwoUniquesNeeded:
-            queue.Dequeue();
-            queue.Enqueue(input[0][i]);
-        
-            uniqueCheckHashSet.Clear();
-            if (queue.All(x => uniqueCheckHashSet.Add(x)))
-            {
-                Console.WriteLine($"Answer to part two: {i + 1}");
-                answerFound = true;
-            }
+        if (uniqueCheckHashSet.Add(input[0][i + j]) == false)
             break;
+
+        if (j == partTwoUniquesNeeded - 1)
+            allUnique = true;
+    }
+
+    if (allUnique)
+    {
+        Console.WriteLine($"Answer to part two: {i + partTwoUniquesNeeded}");
+        break;
     }
 }
 
