@@ -15,22 +15,23 @@ var uniqueCheckHashSet = new HashSet<char>();
 
 for (var i = 0; i < input[0].Length; i++)
 {
-    queue.Enqueue(input[0][i]);
-
-    switch (queue.Count)
+    if (queue.Count < partOneUniquesNeeded)
     {
-        case < partOneUniquesNeeded:
-            continue;
-        case > partOneUniquesNeeded:
-            queue.Dequeue();
-            break;
+        queue.Enqueue(input[0][i]);
+        continue;
     }
-
-    uniqueCheckHashSet.Clear();
-    if (queue.All(x => uniqueCheckHashSet.Add(x)))
+    
+    if (queue.Count >= partOneUniquesNeeded)
     {
-        Console.WriteLine($"Answer to part one: {i + 1}");
-        break;
+        queue.Dequeue();
+        queue.Enqueue(input[0][i]);
+        
+        uniqueCheckHashSet.Clear();
+        if (queue.All(x => uniqueCheckHashSet.Add(x)))
+        {
+            Console.WriteLine($"Answer to part one: {i + 1}");
+            break;
+        }
     }
 }
 
@@ -38,22 +39,23 @@ queue.Clear();
 
 for (var i = 0; i < input[0].Length; i++)
 {
-    queue.Enqueue(input[0][i]);
-
-    switch (queue.Count)
+    if (queue.Count < partTwoUniquesNeeded)
     {
-        case < partTwoUniquesNeeded:
-            continue;
-        case > partTwoUniquesNeeded:
-            queue.Dequeue();
-            break;
+        queue.Enqueue(input[0][i]);
+        continue;
     }
-    
-    uniqueCheckHashSet.Clear();
-    if (queue.All(x => uniqueCheckHashSet.Add(x)))
+
+    if (queue.Count >= partTwoUniquesNeeded)
     {
-        Console.WriteLine($"Answer to part two: {i + 1}");
-        break;
+        queue.Dequeue();
+        queue.Enqueue(input[0][i]);
+        
+        uniqueCheckHashSet.Clear();
+        if (queue.All(x => uniqueCheckHashSet.Add(x)))
+        {
+            Console.WriteLine($"Answer to part two: {i + 1}");
+            break;
+        }
     }
 }
 
