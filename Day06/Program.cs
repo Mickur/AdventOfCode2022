@@ -20,7 +20,7 @@ for (var i = 0; i < input[0].Length; i++)
     uniqueCheckHashSet.Clear();
     for (var j = 0; j < maxUniquesNeeded; j++)
     {
-        if (uniqueCheckHashSet.Add(input[0][i + j]) == false)
+        if (i + j >= input[0].Length || uniqueCheckHashSet.Add(input[0][i + j]) == false)
             break;
 
         if (!partOneAllUniqueFound && j == partOneUniquesNeeded - 1)
