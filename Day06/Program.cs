@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-Console.WriteLine("Mickur's Advent of Code 2022 - Day 6!");
+﻿Console.WriteLine("Mickur's Advent of Code 2022 - Day 6!");
 
 // Setup
 var input = File.ReadAllLines("input.txt");
@@ -8,12 +6,11 @@ const int partOneUniquesNeeded = 4;
 const int partTwoUniquesNeeded = 14;
 const int maxUniquesNeeded = partTwoUniquesNeeded > partOneUniquesNeeded ? partTwoUniquesNeeded : partOneUniquesNeeded;
 
-var sw = new Stopwatch();
-sw.Start();
-
-var uniqueCheckHashSet = new HashSet<char>();
+var uniqueCheckHashSet = new HashSet<char>(maxUniquesNeeded);
 var partOneAllUniqueFound = false;
+var partOneAnswer = -1;
 var partTwoAllUniqueFound = false;
+var partTwoAnswer = -1;
 
 for (var i = 0; i < input[0].Length; i++)
 {
@@ -25,13 +22,13 @@ for (var i = 0; i < input[0].Length; i++)
 
         if (!partOneAllUniqueFound && j == partOneUniquesNeeded - 1)
         {
-            Console.WriteLine($"Answer to part one: {i + partOneUniquesNeeded}");
+            partOneAnswer = i + partOneUniquesNeeded;
             partOneAllUniqueFound = true;
         }
 
         if (!partTwoAllUniqueFound && j == partTwoUniquesNeeded - 1)
         {
-            Console.WriteLine($"Answer to part two: {i + partTwoUniquesNeeded}");
+            partTwoAnswer = i + partTwoUniquesNeeded;
             partTwoAllUniqueFound = true;
         }
     }
@@ -40,5 +37,5 @@ for (var i = 0; i < input[0].Length; i++)
         break;
 }
 
-sw.Stop();
-Console.WriteLine($"{sw.ElapsedMilliseconds} ms ({sw.ElapsedTicks} ticks)");
+Console.WriteLine($"Answer to part one: {partOneAnswer}");
+Console.WriteLine($"Answer to part two: {partTwoAnswer}");
