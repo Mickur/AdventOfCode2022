@@ -1,4 +1,6 @@
-﻿Console.WriteLine("Mickur's Advent of Code 2022 - Day 7!");
+﻿using AoCUtils;
+
+Console.WriteLine("Mickur's Advent of Code 2022 - Day 7!");
 
 // Setup
 var input = File.ReadAllLines("input.txt");
@@ -28,10 +30,19 @@ foreach (var line in input)
                 break;
             
             default:
-                // Check if it already exists
-                if (currentDir.Children.Exists(x => x.Name == output[2]))
-                    currentDir = currentDir.Children.First(x => x.Name == output[2]);
-                else
+                var newDirSet = false;
+                
+                for (var i = 0; i < currentDir.Children.Count; i++)
+                {
+                    if (currentDir.Children[i].Name == output[2])
+                    {
+                        currentDir = currentDir.Children[i];
+                        newDirSet = true;
+                        break;
+                    }
+                }
+
+                if (!newDirSet)
                 {
                     var newDir = new CustomDirectory($"{output[2]}", currentDir);
                     currentDir.Children.Add(newDir);
@@ -44,18 +55,14 @@ foreach (var line in input)
     // Output
     else
     {
-        if (int.TryParse(output[0], out var result))
-        {
-            currentDir.Files.Add(output[1], result);;
-        }
+        currentDir.Files.Add(output[1], Parsing.FastIntParse(output[0]));
     }
 }
-
-var answerA = rootDir.GetSumOfDirectoriesBelowSize(100000);
 
 var rootSize = rootDir.GetDirectorySize();
 var needToFree = -70000000 + 30000000 + rootSize;
 
+var answerA = rootDir.GetSumOfDirectoriesBelowSize(100000);
 var answerB = rootDir.GetListOfDirectoriesAboveSize(needToFree).Min();
 
 Console.WriteLine(answerA);
@@ -78,9 +85,9 @@ class CustomDirectory
     {
         var value = 0;
 
-        foreach (var subDir in Children)
+        for (var i = 0; i < Children.Count; i++)
         {
-            value += subDir.GetDirectorySize();
+            value += Children[i].GetDirectorySize();
         }
 
         foreach (var file in Files)
@@ -97,15 +104,15 @@ class CustomDirectory
         var dirSize = 0;
         
         // Keep value from subdirs
-        foreach (var subDir in Children)
+        for (var i = 0; i < Children.Count; i++)
         {
-            value += subDir.GetSumOfDirectoriesBelowSize(max);
+            value += Children[i].GetSumOfDirectoriesBelowSize(max);
         }
 
         // Add to value if we have a total below max
-        foreach (var subDir in Children)
+        for (var i = 0; i < Children.Count; i++)
         {
-            dirSize += subDir.GetDirectorySize();
+            dirSize += Children[i].GetDirectorySize();
         }
         
         foreach (var file in Files)
@@ -125,15 +132,15 @@ class CustomDirectory
         var sizes = new List<int>();
         
         // Keep sizes from subdirs
-        foreach (var subDir in Children)
+        for (var i = 0; i < Children.Count; i++)
         {
-            sizes.AddRange(subDir.GetListOfDirectoriesAboveSize(minSize));
+            sizes.AddRange(Children[i].GetListOfDirectoriesAboveSize(minSize));
         }
 
         // Add to sizes if we have a total above min
-        foreach (var subDir in Children)
+        for (var i = 0; i < Children.Count; i++)
         {
-            dirSize += subDir.GetDirectorySize();
+            dirSize += Children[i].GetDirectorySize();
         }
         
         foreach (var file in Files)
