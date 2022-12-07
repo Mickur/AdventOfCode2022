@@ -9,50 +9,44 @@ var currentDir = rootDir;
 foreach (var line in input)
 {
     // Ignore these lines
-    if (line == "$ ls")
+    if (line.StartsWith("dir ") || line == "$ ls")
         continue;
-
-    if (line.StartsWith("dir "))
-        continue;
+    
+    var output = line.Split(' ');
 
     // Changing directory
     if (line.StartsWith("$ cd "))
     {
-        var output = line.Split(' ');
-        
         switch (output[2])
         {
             case "/":
                 currentDir = rootDir;
-                continue;
+                break;
             
             case "..":
-                currentDir = currentDir.parent;
-                continue;
+                currentDir = currentDir.Parent;
+                break;
             
             default:
                 // Check if it already exists
-                if (currentDir.children.Exists(x => x.name == output[2]))
-                    currentDir = currentDir.children.First(x => x.name == output[2]);
+                if (currentDir.Children.Exists(x => x.Name == output[2]))
+                    currentDir = currentDir.Children.First(x => x.Name == output[2]);
                 else
                 {
                     var newDir = new CustomDirectory($"{output[2]}", currentDir);
-                    currentDir.children.Add(newDir);
+                    currentDir.Children.Add(newDir);
                     currentDir = newDir;
                 }
-                
-                continue;
+                break;
         }
     }
     
     // Output
     else
     {
-        var output = line.Split(' ');
-        
-        if (long.TryParse(output[0], out var result))
+        if (int.TryParse(output[0], out var result))
         {
-            currentDir.files.Add(output[1], result);;
+            currentDir.Files.Add(output[1], result);;
         }
     }
 }
@@ -69,27 +63,27 @@ Console.WriteLine(answerB);
 
 class CustomDirectory
 {
-    public string name;
-    public Dictionary<string, long> files = new ();
-    public CustomDirectory parent;
-    public List<CustomDirectory> children = new();
+    public readonly string Name;
+    public readonly Dictionary<string, int> Files = new ();
+    public readonly CustomDirectory Parent;
+    public readonly List<CustomDirectory> Children = new();
 
     public CustomDirectory(string name, CustomDirectory parent = null)
     {
-        this.name = name;
-        this.parent = parent;
+        Name = name;
+        Parent = parent;
     }
 
-    public long GetDirectorySize()
+    public int GetDirectorySize()
     {
-        long value = 0;
+        var value = 0;
 
-        foreach (var subDir in children)
+        foreach (var subDir in Children)
         {
             value += subDir.GetDirectorySize();
         }
 
-        foreach (var file in files)
+        foreach (var file in Files)
         {
             value += file.Value;
         }
@@ -97,23 +91,24 @@ class CustomDirectory
         return value;
     }
 
-    public long GetSumOfDirectoriesBelowSize(long max)
+    public int GetSumOfDirectoriesBelowSize(int max)
     {
-        long value = 0;
-        long dirSize = 0;
+        var value = 0;
+        var dirSize = 0;
         
         // Keep value from subdirs
-        foreach (var subDir in children)
+        foreach (var subDir in Children)
         {
             value += subDir.GetSumOfDirectoriesBelowSize(max);
         }
 
         // Add to value if we have a total below max
-        foreach (var subDir in children)
+        foreach (var subDir in Children)
         {
             dirSize += subDir.GetDirectorySize();
         }
-        foreach (var file in files)
+        
+        foreach (var file in Files)
         {
             dirSize += file.Value;
         }
@@ -124,23 +119,24 @@ class CustomDirectory
         return value;
     }
 
-    public List<long> GetListOfDirectoriesAboveSize(long minSize)
+    public List<int> GetListOfDirectoriesAboveSize(int minSize)
     {
-        long dirSize = 0;
-        var sizes = new List<long>();
+        var dirSize = 0;
+        var sizes = new List<int>();
         
         // Keep sizes from subdirs
-        foreach (var subDir in children)
+        foreach (var subDir in Children)
         {
             sizes.AddRange(subDir.GetListOfDirectoriesAboveSize(minSize));
         }
 
         // Add to sizes if we have a total above min
-        foreach (var subDir in children)
+        foreach (var subDir in Children)
         {
             dirSize += subDir.GetDirectorySize();
         }
-        foreach (var file in files)
+        
+        foreach (var file in Files)
         {
             dirSize += file.Value;
         }
