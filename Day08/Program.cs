@@ -1,6 +1,11 @@
-﻿Console.WriteLine("Mickur's Advent of Code 2022 - Day 8!");
+﻿using System.Diagnostics;
+
+Console.WriteLine("Mickur's Advent of Code 2022 - Day 8!");
 
 var input = File.ReadAllLines("input.txt");
+
+var sw = new Stopwatch();
+sw.Start();
 
 var treeGrid = new List<List<int>>();
 var counter = 0;
@@ -18,12 +23,12 @@ foreach (var line in input)
     treeGrid.Add(currRow);
 }
 
-var height = treeGrid.Count - 1;
-var width = treeGrid[0].Count - 1;
+var height = treeGrid.Count;
+var width = treeGrid[0].Count;
 
-for (var currY = 0; currY < treeGrid.Count; currY++)
+for (var currY = 0; currY < height; currY++)
 {
-    for (var currX = 0; currX < treeGrid[currY].Count; currX++)
+    for (var currX = 0; currX < width; currX++)
     {
         var canBeSeenFromTop = true;
         var canBeSeenFromRight = true;
@@ -45,7 +50,7 @@ for (var currY = 0; currY < treeGrid.Count; currY++)
         }
         
         // A: Check right
-        for (var right = width; right > currX; right--)
+        for (var right = width - 1; right > currX; right--)
         {
             var checkValue = treeGrid[currY][right];
             if (checkValue >= currValue)
@@ -56,7 +61,7 @@ for (var currY = 0; currY < treeGrid.Count; currY++)
         }
         
         // A: Check bottom
-        for (var bottom = height; bottom > currY; bottom--)
+        for (var bottom = height - 1; bottom > currY; bottom--)
         {
             var checkValue = treeGrid[bottom][currX];
             if (checkValue >= currValue)
@@ -102,7 +107,7 @@ for (var currY = 0; currY < treeGrid.Count; currY++)
         // B: Check bottom
         tempY = currY + 1;
         var bottomSight = 0;
-        while (tempY <= height)
+        while (tempY < height)
         {
             if (currValue <= treeGrid[tempY][currX])
             {
@@ -138,7 +143,7 @@ for (var currY = 0; currY < treeGrid.Count; currY++)
         // B: Check right
         tempX = currX + 1;
         var rightSight = 0;
-        while (tempX <= width)
+        while (tempX < width)
         {
             if (currValue <= treeGrid[currY][tempX])
             {
@@ -159,6 +164,9 @@ for (var currY = 0; currY < treeGrid.Count; currY++)
             bestBAnswer = bValue;
     }
 }
+
+sw.Stop();
+Console.WriteLine($"Finished in {sw.ElapsedMilliseconds} ms ({sw.ElapsedTicks} ticks)");
 
 Console.WriteLine(counter);
 Console.WriteLine(bestBAnswer);
