@@ -52,12 +52,12 @@ Console.ReadKey();
 class RopePart
 {
     public (int, int) CurrLocation;
-    public Dictionary<(int, int), int> Visited;
+    public readonly HashSet<(int, int)> Visited;
 
     public RopePart()
     {
         CurrLocation = (0, 0);
-        Visited = new Dictionary<(int, int), int> {{ (0, 0), 1}};
+        Visited = new HashSet<(int, int)> { (0, 0) };
     }
 
     public void Move(char direction)
@@ -80,7 +80,7 @@ class RopePart
                 return;
         }
         
-        AddVisit(CurrLocation);
+        Visited.Add((CurrLocation.Item1, CurrLocation.Item2));
     }
     
     public void Follow((int, int) target)
@@ -110,19 +110,6 @@ class RopePart
             CurrLocation.Item2 = thisY > targetY ? thisY - 1 : thisY + 1;
         }
         
-        AddVisit(CurrLocation);
-    }
-
-    private void AddVisit((int, int) location)
-    {
-        // Add to visited locations
-        var key = (CurrLocation.Item1, CurrLocation.Item2);
-                
-        if (Visited.TryGetValue(key, out var value))
-            value++;
-        else
-        {
-            Visited.Add(key, 1);
-        }
+        Visited.Add((CurrLocation.Item1, CurrLocation.Item2));
     }
 }
