@@ -8,8 +8,8 @@ var sw = new Stopwatch();
 sw.Start();
 
 var treeGrid = new List<List<int>>();
-var counter = 0;
-long bestBAnswer = 0;
+var visibleTreesFromOutside = 0;
+long highestScenicScore = 0;
 
 foreach (var line in input)
 {
@@ -35,58 +35,9 @@ for (var currY = 0; currY < height; currY++)
         var canBeSeenFromBottom = true;
         var canBeSeenFromLeft = true;
         
-        // Check up and down
         var currValue = treeGrid[currY][currX];
-
-        // A: Check top
-        for (var top = 0; top < currY; top++)
-        {
-            var checkValue = treeGrid[top][currX];
-            if (checkValue >= currValue)
-            {
-                canBeSeenFromTop = false;
-                break;
-            }
-        }
         
-        // A: Check right
-        for (var right = width - 1; right > currX; right--)
-        {
-            var checkValue = treeGrid[currY][right];
-            if (checkValue >= currValue)
-            {
-                canBeSeenFromRight = false;
-                break;
-            }
-        }
-        
-        // A: Check bottom
-        for (var bottom = height - 1; bottom > currY; bottom--)
-        {
-            var checkValue = treeGrid[bottom][currX];
-            if (checkValue >= currValue)
-            {
-                canBeSeenFromBottom = false;
-                break;
-            }
-        }
-        
-        // A: Check left
-        for (var left = 0; left < currX; left++)
-        {
-            var checkValue = treeGrid[currY][left];
-            if (checkValue >= currValue)
-            {
-                canBeSeenFromLeft = false;
-                break;
-            }
-        }
-        
-        if (canBeSeenFromTop || canBeSeenFromRight || canBeSeenFromBottom || canBeSeenFromLeft)
-            counter++;
-        
-        
-        // B: Check top
+        // Direction: Up
         var tempY = currY - 1;
         var topSight = 0;
         while (tempY >= 0)
@@ -94,6 +45,7 @@ for (var currY = 0; currY < height; currY++)
             if (currValue <= treeGrid[tempY][currX])
             {
                 topSight++;
+                canBeSeenFromTop = false;
                 break;
             }
             
@@ -104,7 +56,7 @@ for (var currY = 0; currY < height; currY++)
             tempY--;
         }
         
-        // B: Check bottom
+        // Direction: Down
         tempY = currY + 1;
         var bottomSight = 0;
         while (tempY < height)
@@ -112,6 +64,7 @@ for (var currY = 0; currY < height; currY++)
             if (currValue <= treeGrid[tempY][currX])
             {
                 bottomSight++;
+                canBeSeenFromBottom = false;
                 break;
             }
             
@@ -122,7 +75,7 @@ for (var currY = 0; currY < height; currY++)
             tempY++;
         }
         
-        // B: Check left
+        // Direction: Left
         var tempX = currX - 1;
         var leftSight = 0;
         while (tempX >= 0)
@@ -130,6 +83,7 @@ for (var currY = 0; currY < height; currY++)
             if (currValue <= treeGrid[currY][tempX])
             {
                 leftSight++;
+                canBeSeenFromLeft = false;
                 break;
             }
             
@@ -140,7 +94,7 @@ for (var currY = 0; currY < height; currY++)
             tempX--;
         }
         
-        // B: Check right
+        // Direction: Right
         tempX = currX + 1;
         var rightSight = 0;
         while (tempX < width)
@@ -148,6 +102,7 @@ for (var currY = 0; currY < height; currY++)
             if (currValue <= treeGrid[currY][tempX])
             {
                 rightSight++;
+                canBeSeenFromRight = false;
                 break;
             }
             
@@ -157,16 +112,19 @@ for (var currY = 0; currY < height; currY++)
                 break;
             tempX++;
         }
+        
+        if (canBeSeenFromTop || canBeSeenFromRight || canBeSeenFromBottom || canBeSeenFromLeft)
+            visibleTreesFromOutside++;
 
         long bValue = topSight * rightSight * bottomSight * leftSight;
 
-        if (bValue > bestBAnswer)
-            bestBAnswer = bValue;
+        if (bValue > highestScenicScore)
+            highestScenicScore = bValue;
     }
 }
 
 sw.Stop();
 Console.WriteLine($"Finished in {sw.ElapsedMilliseconds} ms ({sw.ElapsedTicks} ticks)");
 
-Console.WriteLine(counter);
-Console.WriteLine(bestBAnswer);
+Console.WriteLine($"Part one: {visibleTreesFromOutside} trees are visible from outside the grid");
+Console.WriteLine($"Part two: Highest Scenic Score is {highestScenicScore}");
