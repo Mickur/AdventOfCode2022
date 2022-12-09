@@ -5,18 +5,17 @@ Console.WriteLine("Mickur's Advent of Code 2022 - Day 9!");
 
 // Setup
 var input = File.ReadAllLines("input.txt");
-const int numOfTails = 9;
+const int ropeLength = 10; // Includes the head!
 
 // Initialize the positions of the head and tail as a tuple of coordinates
-var head = (0, 0);
-var tailArray = new (int, int)[numOfTails];
-var tailVisitedArray = new Dictionary<string, int>[numOfTails];
+var ropeArray = new (int, int)[ropeLength];
+var ropeVisitedArray = new Dictionary<string, int>[ropeLength];
 
 // Fill arrays with starting data
-for (var i = 0; i < numOfTails; i++)
+for (var i = 0; i < ropeLength; i++)
 {
-    tailArray[i] = (0, 0);
-    tailVisitedArray[i] = new Dictionary<string, int> {{"0x0", 1}};
+    ropeArray[i] = (0, 0);
+    ropeVisitedArray[i] = new Dictionary<string, int> {{"0x0", 1}};
 }
 
 var sw = new Stopwatch();
@@ -30,29 +29,27 @@ foreach (var move in input)
 
     for (var i = 0; i < steps; i++)
     {
-        // Update the position of the head based on the current move
-        head = UpdateHeadPosition(head, move[0]);
-        
-        // Loop through tails
-        for (var j = 0; j < numOfTails; j++)
+        // Loop through rope
+        for (var j = 0; j < ropeLength; j++)
         {
-            var temp = tailArray[j];
+            var temp = ropeArray[j];
             
-            if (j == 0)
-                tailArray[j] = UpdateTailPosition(head, tailArray[j]);
+            // Update the position of the rope
+            if(j == 0)
+                ropeArray[j] = UpdateHeadPosition(ropeArray[j], move[0]);
             else
-                tailArray[j] = UpdateTailPosition(tailArray[j-1], tailArray[j]);
+                ropeArray[j] = UpdateTailPosition(ropeArray[j-1], ropeArray[j]);
             
             // Save visited state
-            if (tailArray[j] != temp)
+            if (ropeArray[j] != temp)
             {
-                var key = $"{tailArray[j].Item1}x{tailArray[j].Item2}";
+                var key = $"{ropeArray[j].Item1}x{ropeArray[j].Item2}";
 
-                if (tailVisitedArray[j].TryGetValue(key, out var value))
+                if (ropeVisitedArray[j].TryGetValue(key, out var value))
                     value++;
                 else
                 {
-                    tailVisitedArray[j].Add(key, 1);
+                    ropeVisitedArray[j].Add(key, 1);
                 }
             }
         }
@@ -63,9 +60,12 @@ sw.Stop();
 Console.WriteLine($"Finished in {sw.ElapsedMilliseconds} ms ({sw.ElapsedTicks} ticks)");
 
 // Print the final position of the tails
-for (var i = 0; i < numOfTails; i++)
+for (var i = 0; i < ropeLength; i++)
 {
-    Console.WriteLine($"Tail {i + 1} visited: {tailVisitedArray[i].Count} places");
+    if (i == 0)
+        Console.WriteLine($"Head visited: {ropeVisitedArray[i].Count} places");
+    else
+        Console.WriteLine($"Tail {i} visited: {ropeVisitedArray[i].Count} places");
 }
 
 (int, int) UpdateHeadPosition((int, int) head, char move)
