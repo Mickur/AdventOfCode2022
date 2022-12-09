@@ -9,13 +9,13 @@ const int ropeLength = 10; // Includes the head!
 
 // Initialize the positions of the head and tail as a tuple of coordinates
 var ropeArray = new (int, int)[ropeLength];
-var ropeVisitedArray = new Dictionary<string, int>[ropeLength];
+var ropeVisitedArray = new Dictionary<(int, int), int>[ropeLength];
 
 // Fill arrays with starting data
 for (var i = 0; i < ropeLength; i++)
 {
     ropeArray[i] = (0, 0);
-    ropeVisitedArray[i] = new Dictionary<string, int> {{"0x0", 1}};
+    ropeVisitedArray[i] = new Dictionary<(int, int), int> {{ (0, 0), 1}};
 }
 
 var sw = new Stopwatch();
@@ -24,8 +24,7 @@ sw.Start();
 // Loop through each move in the input
 foreach (var move in input)
 {
-    var splitMove = move.Split(' ');
-    var steps = Parsing.FastIntParse(splitMove[1]);
+    var steps = Parsing.FastIntParse(move.AsSpan(2));
 
     for (var i = 0; i < steps; i++)
     {
@@ -43,8 +42,8 @@ foreach (var move in input)
             // Save visited state
             if (ropeArray[j] != temp)
             {
-                var key = $"{ropeArray[j].Item1}x{ropeArray[j].Item2}";
-
+                var key = (ropeArray[j].Item1, ropeArray[j].Item2);
+                
                 if (ropeVisitedArray[j].TryGetValue(key, out var value))
                     value++;
                 else
@@ -62,11 +61,12 @@ Console.WriteLine($"Finished in {sw.ElapsedMilliseconds} ms ({sw.ElapsedTicks} t
 // Print the final position of the tails
 for (var i = 0; i < ropeLength; i++)
 {
-    if (i == 0)
-        Console.WriteLine($"Head visited: {ropeVisitedArray[i].Count} places");
-    else
-        Console.WriteLine($"Tail {i} visited: {ropeVisitedArray[i].Count} places");
+    Console.WriteLine(i == 0
+        ? $"Head visited: {ropeVisitedArray[i].Count} places"
+        : $"Tail {i} visited: {ropeVisitedArray[i].Count} places");
 }
+
+Console.ReadKey();
 
 (int, int) UpdateHeadPosition((int, int) head, char move)
 {

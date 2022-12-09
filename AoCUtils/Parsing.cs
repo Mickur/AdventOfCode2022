@@ -15,4 +15,13 @@ public static class Parsing
 
         return parseValue;
     }
+    
+    public static int FastIntParse(ReadOnlySpan<char> input)
+    {
+        var parseValue = 0;
+        foreach (var c in input)
+            parseValue = parseValue * 10 + (c - '0');
+
+        return parseValue;
+    }
 }
