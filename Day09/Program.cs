@@ -64,18 +64,20 @@ class RopePart
     {
         switch (direction)
         {
-            case 'U':
+            case 'U' or 'u':
                 CurrLocation.Item2--;
                 break;
-            case 'D':
+            case 'D' or 'd':
                 CurrLocation.Item2++;
                 break;
-            case 'L':
+            case 'L' or 'l':
                 CurrLocation.Item1--;
                 break;
-            case 'R':
+            case 'R' or 'r':
                 CurrLocation.Item1++;
                 break;
+            default:
+                return;
         }
         
         AddVisit(CurrLocation);
