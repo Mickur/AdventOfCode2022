@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 using AoCUtils;
 
 Console.WriteLine("Mickur's Advent of Code 2022 - Day 10!");
@@ -11,7 +12,7 @@ var shouldBeAdded = false;
 
 var register = 1;
 var cycles = 0;
-var signalStrengths = new List<int>();
+var signalStrengthSum = 0;
 
 var crt = new char[40, 6];
 crt[0, 0] = '#';
@@ -26,7 +27,7 @@ for (var i = 0; cycles < 240; i++)
     cycles++;
 
     AddSignalStrength();
-    DrawCrt();
+    UpdateCrtArray();
     
     // 2 cycle operation
     if (input[i] != "noop")
@@ -37,7 +38,7 @@ for (var i = 0; cycles < 240; i++)
         cycles++;
 
         AddSignalStrength();
-        DrawCrt();
+        UpdateCrtArray();
     }
     
     // Add values
@@ -48,30 +49,23 @@ for (var i = 0; cycles < 240; i++)
     }
 }
 
+var bAnswer = CrtToString();
+
 sw.Stop();
 Console.WriteLine($"Finished in {sw.ElapsedMilliseconds} ms ({sw.ElapsedTicks} ticks)");
 
-Console.WriteLine($"Part One answer: Sum of signal strengths is {signalStrengths.Sum()}");
-
-Console.WriteLine($"Part Two answer: CRT output below");
-for (var y = 0; y < 6; y++)
-{
-    for (var x = 0; x < 40; x++)
-    {
-        Console.Write(crt[x, y]);
-    }
-    Console.Write(Environment.NewLine);
-}
+Console.WriteLine(signalStrengthSum);
+Console.WriteLine(bAnswer);
 
 void AddSignalStrength()
 {
     if (cycles == 20 || (cycles + 20) % 40 == 0)
     {
-        signalStrengths.Add(register * cycles);
+        signalStrengthSum += register * cycles;
     }
 }
 
-void DrawCrt()
+void UpdateCrtArray()
 {
     var x = (cycles - 1) % 40;
     var y = cycles / 40;
@@ -82,4 +76,20 @@ void DrawCrt()
         crt[x, y] = '#';
     else 
         crt[x, y] = '.';
+}
+
+string CrtToString()
+{
+    var builder = new StringBuilder();
+    
+    for (var y = 0; y < 6; y++)
+    {
+        for (var x = 0; x < 40; x++)
+        {
+            builder.Append(crt[x, y]);
+        }
+        builder.Append(Environment.NewLine);
+    }
+
+    return builder.ToString();
 }
