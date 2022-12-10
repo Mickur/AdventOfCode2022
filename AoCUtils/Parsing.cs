@@ -2,26 +2,29 @@
 
 public static class Parsing
 {
-    /// <summary>
-    /// Totally, 110%, terribly unsafe parser. But it's fast!
-    /// </summary>
-    /// <param name="input">String to parse into an integer</param>
-    /// <returns>The integer</returns>
     public static int FastIntParse(string input)
     {
-        var parseValue = 0;
-        foreach (var c in input)
-            parseValue = parseValue * 10 + (c - '0');
-
-        return parseValue;
+        return FastIntParse(input.AsSpan());
     }
     
     public static int FastIntParse(ReadOnlySpan<char> input)
     {
+        var isNegative = false;
         var parseValue = 0;
-        foreach (var c in input)
-            parseValue = parseValue * 10 + (c - '0');
+        var index = 0;
+        
+        // Handle negative numbers
+        if (input[0] == '-')
+        {
+            isNegative = true;
+            index = 1;
+        }
+        
+        for (; index < input.Length; index++)
+        {
+            parseValue = parseValue * 10 + (input[index] - '0');
+        }
 
-        return parseValue;
+        return isNegative ? 0 - parseValue : parseValue;
     }
 }
