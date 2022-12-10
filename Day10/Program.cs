@@ -32,7 +32,7 @@ for (var i = 0; cycles < 240; i++)
     // 2 cycle operation
     if (input[i] != "noop")
     {
-        toBeAdded = Parsing.FastIntParse(input[i].AsSpan(5));
+        toBeAdded = AoCParsing.FastIntParse(input[i].AsSpan(5));
         shouldBeAdded = true;
         
         cycles++;

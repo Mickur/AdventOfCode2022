@@ -1,6 +1,6 @@
 ﻿namespace AoCUtils;
 
-public static class Parsing
+public static class AoCParsing
 {
     public static int FastIntParse(string input)
     {

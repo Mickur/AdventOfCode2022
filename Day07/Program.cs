@@ -55,7 +55,7 @@ foreach (var line in input)
     // Output
     else
     {
-        currentDir.Files.Add(output[1], Parsing.FastIntParse(output[0]));
+        currentDir.Files.Add(output[1], AoCParsing.FastIntParse(output[0]));
     }
 }
 

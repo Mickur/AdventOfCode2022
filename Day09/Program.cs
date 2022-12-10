@@ -20,7 +20,7 @@ sw.Start();
 // Loop through each move in the input
 foreach (var move in input)
 {
-    var steps = Parsing.FastIntParse(move.AsSpan(2));
+    var steps = AoCParsing.FastIntParse(move.AsSpan(2));
 
     for (var i = 0; i < steps; i++)
     {
@@ -46,8 +46,6 @@ for (var i = 0; i < ropeLength; i++)
         ? $"Head visited: {rope[i].Visited.Count} places"
         : $"Tail {i} visited: {rope[i].Visited.Count} places");
 }
-
-Console.ReadKey();
 
 class RopePart
 {

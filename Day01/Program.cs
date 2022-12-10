@@ -1,4 +1,6 @@
-﻿Console.WriteLine("Mickur's Advent of Code 2022 - Day 1!");
+﻿using AoCUtils;
+
+Console.WriteLine("Mickur's Advent of Code 2022 - Day 1!");
 
 // Setup
 var input = File.ReadAllLines("input.txt");
@@ -38,7 +40,7 @@ for (var i = 0; i <= input.Length; i++)
     }
     else
     {
-        currentElfCalories += AoCUtils.Parsing.FastIntParse(input[i]);
+        currentElfCalories += AoCParsing.FastIntParse(input[i]);
     }
 }
 

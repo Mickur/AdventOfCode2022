@@ -1,4 +1,6 @@
-﻿Console.WriteLine("Mickur's Advent of Code 2022 - Day 5!");
+﻿using AoCUtils;
+
+Console.WriteLine("Mickur's Advent of Code 2022 - Day 5!");
 
 // Setup
 var input = File.ReadAllLines("input.txt");
@@ -58,9 +60,9 @@ for (var i = 0; i < stacks1.Count; i++)
 for (var i = instructionsBegin; i < input.Length; i++)
 {
     var split = input[i].Split(' ');
-    var move = AoCUtils.Parsing.FastIntParse(split[1]);
-    var from = AoCUtils.Parsing.FastIntParse(split[3]);
-    var to = AoCUtils.Parsing.FastIntParse(split[5]);
+    var move = AoCParsing.FastIntParse(split[1]);
+    var from = AoCParsing.FastIntParse(split[3]);
+    var to = AoCParsing.FastIntParse(split[5]);
     
     for (var j = 0; j < move; j++)
     {
