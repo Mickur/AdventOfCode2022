@@ -87,18 +87,18 @@ void RunPartOneRounds(IReadOnlyList<Monkey> monkeys, int rounds = 20)
 
 void RunPartTwoRounds(IReadOnlyList<Monkey> monkeys, int rounds = 10000)
 {
+    // Get product of all division tests
+    ulong testsProduct = 1;
+    for (int k = 0; k < monkeys.Count; k++)
+    {
+        testsProduct *= monkeys[k].TestDivision;
+    }
+    
     for (var i = 0; i < rounds; i++)
     {
         // Monkeys
         for (var j = 0; j < monkeys.Count; j++)
         {
-            // Get product of all division tests
-            ulong testsProduct = 1;
-            for (int k = 0; k < monkeys.Count; k++)
-            {
-                testsProduct *= monkeys[k].TestDivision;
-            }
-        
             // Items
             while (monkeys[j].Items.Count != 0)
             {
