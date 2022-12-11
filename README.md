@@ -12,7 +12,7 @@
 | Day 8  | Completed     | 14                        |
 | Day 9  | Completed     | 14                        |
 | Day 10 | Completed     | 15                        |
-| Day 11 | Completed     | 16                        |
+| Day 11 | Completed     | 14                        |
 | Day 12 | Not Completed | -                         |
 | Day 13 | Not Completed | -                         |
 | Day 14 | Not Completed | -                         |
