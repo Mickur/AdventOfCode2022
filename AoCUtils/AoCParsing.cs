@@ -22,9 +22,33 @@ public static class AoCParsing
         
         for (; index < input.Length; index++)
         {
+            if (input[index] == ' ')
+                continue;
+            
             parseValue = parseValue * 10 + (input[index] - '0');
         }
 
         return isNegative ? 0 - parseValue : parseValue;
+    }
+    
+    public static ulong FastULongParse(string input)
+    {
+        return FastULongParse(input.AsSpan());
+    }
+    
+    public static ulong FastULongParse(ReadOnlySpan<char> input)
+    {
+        ulong parseValue = 0;
+        var index = 0;
+        
+        for (; index < input.Length; index++)
+        {
+            if (input[index] == ' ')
+                continue;
+            
+            parseValue = parseValue * 10 + (ulong)(input[index] - '0');
+        }
+
+        return parseValue;
     }
 }
