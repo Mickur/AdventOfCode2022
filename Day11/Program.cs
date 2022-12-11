@@ -11,7 +11,7 @@ sw.Start();
 
 // Part One
 var monkeys = ParseMonkeys(input);
-RunPartOneRounds(monkeys, 20);
+RunRounds(monkeys, 20, false);
 SortMonkeys(monkeys);
 var answerA = monkeys[0].Activity * monkeys[1].Activity;
 
@@ -21,7 +21,7 @@ sw.Restart();
 
 // Part Two
 monkeys = ParseMonkeys(input);
-RunPartTwoRounds(monkeys, 10000);
+RunRounds(monkeys, 10000, true);
 SortMonkeys(monkeys);
 var answerB = monkeys[0].Activity * monkeys[1].Activity;
 
@@ -68,32 +68,19 @@ List<Monkey> ParseMonkeys(IReadOnlyList<string> input)
     return monkeyList;
 }
 
-void RunPartOneRounds(IReadOnlyList<Monkey> monkeys, int rounds = 20)
+void RunRounds(IReadOnlyList<Monkey> monkeys, int rounds, bool isPartTwo)
 {
-    for (var i = 0; i < rounds; i++)
+    ulong divideBy = 3;
+    
+    if (isPartTwo)
     {
-        // Monkeys
-        for (var j = 0; j < monkeys.Count; j++)
+        divideBy = 1;
+        for (int k = 0; k < monkeys.Count; k++)
         {
-            // Items
-            while (monkeys[j].Items.Count != 0)
-            {
-                var item = monkeys[j].Inspect();
-                monkeys[item.Item2].Items.Enqueue(item.Item1);
-            }
+            divideBy *= monkeys[k].TestDivision;
         }
     }
-}
 
-void RunPartTwoRounds(IReadOnlyList<Monkey> monkeys, int rounds = 10000)
-{
-    // Get product of all division tests
-    ulong testsProduct = 1;
-    for (int k = 0; k < monkeys.Count; k++)
-    {
-        testsProduct *= monkeys[k].TestDivision;
-    }
-    
     for (var i = 0; i < rounds; i++)
     {
         // Monkeys
@@ -102,7 +89,7 @@ void RunPartTwoRounds(IReadOnlyList<Monkey> monkeys, int rounds = 10000)
             // Items
             while (monkeys[j].Items.Count != 0)
             {
-                var item = monkeys[j].Inspect(testsProduct);
+                var item = monkeys[j].Inspect(isPartTwo, divideBy);
                 monkeys[item.Item2].Items.Enqueue(item.Item1);
             }
         }
@@ -127,11 +114,11 @@ class Monkey
 {
     public readonly Queue<ulong> Items = new();
     public (char, ulong) Operation;
-    public ulong TestDivision = 0;
+    public ulong TestDivision;
     public (int, int) TestTargets;
-    public ulong Activity = 0;
+    public ulong Activity;
 
-    public (ulong, int) Inspect(ulong divideBy = 0)
+    public (ulong, int) Inspect(bool isPartTwo, ulong divideBy)
     {
         Activity++;
 
@@ -148,13 +135,13 @@ class Monkey
                 break;
         }
 
-        if (divideBy > 0)
+        if (isPartTwo)
         {
             item %= divideBy;
         }
         else
         {
-            item /= 3;
+            item /= divideBy;
         }
 
         return item % TestDivision == 0 ? (item, TestTargets.Item1) : (item, TestTargets.Item2);
