@@ -93,15 +93,16 @@ namespace BenchmarkSandbox
                 for (var k = 0; k < monkeys.Count; k++) divideBy *= monkeys[k].TestDivision;
             }
 
+            // Rounds
             for (var i = 0; i < rounds; i++)
                 // Monkeys
-            for (var j = 0; j < monkeys.Count; j++)
-                // Items
-                while (monkeys[j].Items.Count != 0)
-                {
-                    var item = monkeys[j].Inspect(isPartTwo, divideBy);
-                    monkeys[item.Item2].Items.Enqueue(item.Item1);
-                }
+                for (var j = 0; j < monkeys.Count; j++)
+                    // Items
+                    while (monkeys[j].Items.Count != 0)
+                    {
+                        var item = monkeys[j].Inspect(isPartTwo, divideBy);
+                        monkeys[item.Item2].Items.Enqueue(item.Item1);
+                    }
         }
 
         public void SortMonkeys(List<Monkey> monkeys)
