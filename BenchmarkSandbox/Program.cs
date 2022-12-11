@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
-using AoCUtils;
+﻿using AoCUtils;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
@@ -16,7 +14,6 @@ namespace BenchmarkSandbox
     }
 
     [MemoryDiagnoser]
-    //[SimpleJob(RuntimeMoniker.Net60, baseline: true)]
     [SimpleJob(RuntimeMoniker.Net70)]
     public class Benchmarker
     {
@@ -25,43 +22,134 @@ namespace BenchmarkSandbox
         [GlobalSetup]
         public void Setup()
         {
-            input = File.ReadAllLines("inputs/2022-Day10.txt");
+            input = File.ReadAllLines("inputs/2022-Day11.txt");
+        }
+        
+        [Benchmark]
+        public List<Monkey> Parse()
+        {
+            return ParseMonkeys(input);
+        }
+        
+        [Benchmark]
+        public ulong SolvePartOne()
+        {
+            var monkeys = ParseMonkeys(input);
+            RunRounds(monkeys, 20, false);
+            SortMonkeys(monkeys);
+            return monkeys[0].Activity * monkeys[1].Activity;
         }
 
-        /*[Benchmark]
-        public int SolveA()
-        {
-            return 1;
-        }*/
-        
-        /*[Benchmark]
-        public int SolveB()
-        {
-            return 0;
-        }*/
-        
         [Benchmark]
-        public int IntParse()
+        public ulong SolvePartTwo()
         {
-            return int.Parse("-12345", NumberStyles.Integer, CultureInfo.InvariantCulture) + int.Parse("123456", NumberStyles.Integer, CultureInfo.InvariantCulture);
+            var monkeys = ParseMonkeys(input);
+            RunRounds(monkeys, 10000, true);
+            SortMonkeys(monkeys);
+            return monkeys[0].Activity * monkeys[1].Activity;
         }
-        
-        [Benchmark]
-        public int FastIntParse()
+
+        public List<Monkey> ParseMonkeys(IReadOnlyList<string> input)
         {
-            return AoCParsing.FastIntParse("-12345") + AoCParsing.FastIntParse("123456");
+            var monkeyList = new List<Monkey>(10);
+
+            for (var i = 0; i < input.Count; i++)
+            {
+                var monkey = new Monkey();
+
+                // Parse items
+                var itemsString = input[i + 1].AsSpan(18).ToString();
+                var items = itemsString.Split(", ");
+                for (var j = 0; j < items.Length; j++) monkey.Items.Enqueue(AoCParsing.FastULongParse(items[j]));
+
+                // Parse operation
+                var operation = input[i + 2][23];
+                var operationValue =
+                    input[i + 2][25] == 'o'
+                        ? 0
+                        : AoCParsing.FastULongParse(input[i + 2].AsSpan(25)); // Set to 0 if "old", otherwise parse it
+                monkey.Operation = (operation, operationValue);
+
+                // Parse test
+                monkey.TestDivision = AoCParsing.FastULongParse(input[i + 3].AsSpan(21));
+                monkey.TestTargets = (AoCParsing.FastIntParse(input[i + 4].AsSpan(29)),
+                    AoCParsing.FastIntParse(input[i + 5].AsSpan(30)));
+
+                monkeyList.Add(monkey);
+
+                i += 6;
+            }
+
+            return monkeyList;
         }
-        
-        [Benchmark]
-        public ulong ULongParse()
+
+        public void RunRounds(IReadOnlyList<Monkey> monkeys, int rounds, bool isPartTwo)
         {
-            return ulong.Parse("18446744073709551614", NumberStyles.Integer, CultureInfo.InvariantCulture);
+            ulong divideBy = 3;
+
+            if (isPartTwo)
+            {
+                divideBy = 1;
+                for (var k = 0; k < monkeys.Count; k++) divideBy *= monkeys[k].TestDivision;
+            }
+
+            for (var i = 0; i < rounds; i++)
+                // Monkeys
+            for (var j = 0; j < monkeys.Count; j++)
+                // Items
+                while (monkeys[j].Items.Count != 0)
+                {
+                    var item = monkeys[j].Inspect(isPartTwo, divideBy);
+                    monkeys[item.Item2].Items.Enqueue(item.Item1);
+                }
         }
-        
-        [Benchmark]
-        public ulong FastULongParse()
+
+        public void SortMonkeys(List<Monkey> monkeys)
         {
-            return AoCParsing.FastULongParse("18446744073709551614");
+            monkeys.Sort(delegate(Monkey m1, Monkey m2)
+            {
+                if (m1.Activity < m2.Activity)
+                    return 1;
+
+                if (m1.Activity > m2.Activity)
+                    return -1;
+
+                return 0;
+            });
         }
+    }
+}
+
+public class Monkey
+{
+    public readonly Queue<ulong> Items = new(10);
+    public ulong Activity;
+    public (char, ulong) Operation;
+    public ulong TestDivision;
+    public (int, int) TestTargets;
+
+    public (ulong, int) Inspect(bool isPartTwo, ulong divideBy)
+    {
+        Activity++;
+
+        var item = Items.Dequeue();
+
+        switch (Operation.Item1)
+        {
+            case '+':
+                item += Operation.Item2 == 0 ? item : Operation.Item2;
+                break;
+
+            case '*':
+                item *= Operation.Item2 == 0 ? item : Operation.Item2;
+                break;
+        }
+
+        if (isPartTwo)
+            item %= divideBy;
+        else
+            item /= divideBy;
+
+        return item % TestDivision == 0 ? (item, TestTargets.Item1) : (item, TestTargets.Item2);
     }
 }
