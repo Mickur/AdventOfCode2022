@@ -33,36 +33,32 @@ Console.WriteLine($"Part Two: {answerB}");
 
 List<Monkey> ParseMonkeys(IReadOnlyList<string> input)
 {
-    var monkeyList = new List<Monkey>();
+    var monkeyList = new List<Monkey>(10);
     
     for (var i = 0; i < input.Count; i++)
     {
-        // If it starts with an M, it's a new monkey
-        if (input[i][0] == 'M')
+        var monkey = new Monkey();
+        
+        // Parse items
+        var itemsString = input[i + 1].AsSpan(18).ToString();
+        var items = itemsString.Split(", ");
+        for (var j = 0; j < items.Length; j++)
         {
-            var monkey = new Monkey();
-        
-            // Parse items
-            var itemsString = input[i + 1].AsSpan(18).ToString();
-            var items = itemsString.Split(", ");
-            for (var j = 0; j < items.Length; j++)
-            {
-                monkey.Items.Enqueue(ulong.Parse(items[j]));
-            }
-        
-            // Parse operation
-            var operation = input[i + 2][23];
-            var operationValue = input[i + 2][25] == 'o' ? 0 : ulong.Parse(input[i + 2].AsSpan(25)); // Set to 0 if "old", otherwise parse it
-            monkey.Operation = (operation, operationValue);
-        
-            // Parse test
-            monkey.TestDivision = ulong.Parse(input[i + 3].AsSpan(21));
-            monkey.TestTargets = (AoCParsing.FastIntParse(input[i + 4].AsSpan(29)) , AoCParsing.FastIntParse(input[i + 5].AsSpan(30)));
-
-            monkeyList.Add(monkey);
-
-            i += 6;
+            monkey.Items.Enqueue(AoCParsing.FastULongParse(items[j]));
         }
+        
+        // Parse operation
+        var operation = input[i + 2][23];
+        var operationValue = input[i + 2][25] == 'o' ? 0 : AoCParsing.FastULongParse(input[i + 2].AsSpan(25)); // Set to 0 if "old", otherwise parse it
+        monkey.Operation = (operation, operationValue);
+        
+        // Parse test
+        monkey.TestDivision = AoCParsing.FastULongParse(input[i + 3].AsSpan(21));
+        monkey.TestTargets = (AoCParsing.FastIntParse(input[i + 4].AsSpan(29)) , AoCParsing.FastIntParse(input[i + 5].AsSpan(30)));
+
+        monkeyList.Add(monkey);
+
+        i += 6;
     }
 
     return monkeyList;
@@ -112,7 +108,7 @@ void SortMonkeys(List<Monkey> monkeys)
 
 class Monkey
 {
-    public readonly Queue<ulong> Items = new();
+    public readonly Queue<ulong> Items = new(10);
     public (char, ulong) Operation;
     public ulong TestDivision;
     public (int, int) TestTargets;
