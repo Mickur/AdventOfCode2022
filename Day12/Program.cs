@@ -80,37 +80,49 @@ public class Hill
 
     public int PartOne()
     {
-        return SolveFromLocation(_startX, _startY);
+        var result = SolveFromLocation(_startX, _startY);
+        DrawGridWithPath(result);
+        return result.Steps;
     }
     
     public int PartTwo()
     {
-        var shortest = int.MaxValue;
+        PathStep shortest = null;
 
         foreach (var startingPoint in _possibleStartingLocations)
         {
-            var steps = SolveFromLocation(startingPoint.Item1, startingPoint.Item2);
+            var result = SolveFromLocation(startingPoint.Item1, startingPoint.Item2);
 
-            if (steps >= 0 && steps < shortest)
-                shortest = steps;
+            if (result.Steps >= 0 && result.Steps < (shortest?.Steps ?? int.MaxValue))
+            {
+                shortest = result;
+            }
         }
 
-        return shortest;
+        if (shortest != null)
+        {
+            DrawGridWithPath(shortest);
+            return shortest.Steps;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
-    public int SolveFromLocation(int x, int y, bool isPartTwo = false)
+    public PathStep SolveFromLocation(int x, int y, bool isPartTwo = false)
     {
         var positionVisited = new HashSet<(int, int)>();
-        var queue = new Queue<((int, int), int)>(); // Coordinates and steps
+        var queue = new Queue<((int, int), PathStep)>(); // Coordinates and path
 
-        queue.Enqueue(((x, y), 0));
+        queue.Enqueue(((x, y), new PathStep((x, y), 0)));
 
         while (queue.Count > 0)
         {
             var positionAndCount = queue.Dequeue();
             var posX = positionAndCount.Item1.Item1;
             var posY = positionAndCount.Item1.Item2;
-            var count = positionAndCount.Item2;
+            var pathStep = positionAndCount.Item2;
             var currLocationValue = _hillGrid[posX, posY];
 
             // In Part Two, starting value is always 97.
@@ -119,7 +131,7 @@ public class Hill
             
             if (posX == _endX && posY == _endY)
             {
-                return count;
+                return pathStep;
             }
 
             if (!positionVisited.Contains((posX, posY)))
@@ -128,22 +140,67 @@ public class Hill
 
                 // Move up possible?
                 if (posY > 0 && currLocationValue >= _hillGrid[posX, posY - 1] - 1)
-                    queue.Enqueue(((posX, posY - 1), count + 1));
+                    queue.Enqueue(((posX, posY - 1), new PathStep((posX, posY - 1), pathStep.Steps + 1, pathStep)));
 
                 // Move down possible?
                 if (posY < _height - 1 && currLocationValue >= _hillGrid[posX, posY + 1] - 1)
-                    queue.Enqueue(((posX, posY + 1), count + 1));
+                    queue.Enqueue(((posX, posY + 1), new PathStep((posX, posY + 1), pathStep.Steps + 1, pathStep)));
 
                 // Move left possible?
                 if (posX > 0 && currLocationValue >= _hillGrid[posX - 1, posY] - 1)
-                    queue.Enqueue(((posX - 1, posY), count + 1));
+                    queue.Enqueue(((posX - 1, posY), new PathStep((posX - 1, posY), pathStep.Steps + 1, pathStep)));
 
                 // Move right possible?
                 if (posX < _width - 1 && currLocationValue >= _hillGrid[posX + 1, posY] - 1)
-                    queue.Enqueue(((posX + 1, posY), count + 1));
+                    queue.Enqueue(((posX + 1, posY), new PathStep((posX + 1, posY), pathStep.Steps + 1, pathStep)));
             }
         }
 
-        return -1;
+        return new PathStep((-1, -1), -1);
+    }
+
+    public void DrawGridWithPath(PathStep steps)
+    {
+        var gridCopy = (int[,])_hillGrid.Clone();
+        
+        while (steps.Parent != null)
+        {
+            gridCopy[steps.Coordinates.Item1, steps.Coordinates.Item2] = '#';
+
+            steps = steps.Parent;
+        }
+        
+        for (int x = 0; x < gridCopy.GetLength(1); x++)
+        {
+            for (int y = 0; y < gridCopy.GetLength(0); y++)
+            {
+                var character = (char)gridCopy[y, x];
+
+                if (character == '#')
+                    Console.ForegroundColor = ConsoleColor.Red;
+                else
+                    Console.ForegroundColor = ConsoleColor.White;
+
+                if (character == '`')
+                    character = 'S';
+                
+                Console.Write(character);
+            }
+            Console.Write(Environment.NewLine);
+        }
+    }
+}
+
+public class PathStep
+{
+    public readonly (int, int) Coordinates;
+    public readonly int Steps;
+    public readonly PathStep Parent;
+
+    public PathStep((int, int) coords, int steps, PathStep parent = null)
+    {
+        Coordinates = coords;
+        Steps = steps;
+        Parent = parent;
     }
 }
