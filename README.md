@@ -14,7 +14,7 @@
 | Day 10 | Completed     | 15                        |
 | Day 11 | Completed     | 14                        |
 | Day 12 | Completed     | 14                        |
-| Day 13 | Not Completed | -                         |
+| Day 13 | Completed     | 13                        |
 | Day 14 | Not Completed | -                         |
 | Day 15 | Not Completed | -                         |
 | Day 16 | Not Completed | -                         |
