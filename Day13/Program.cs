@@ -13,10 +13,8 @@ var startTime = Stopwatch.GetTimestamp();
 
 // Parsing
 for (var i = 0; i < input.Length; i++)
-{
-    if(!string.IsNullOrWhiteSpace(input[i]))
-        parsedInput.Add(ParseArray(input[i]));
-}
+    if (input[i] != string.Empty)
+        parsedInput.Add(ParseArray(input[i].AsSpan()));
 
 var elapsedTime = Stopwatch.GetElapsedTime(startTime, Stopwatch.GetTimestamp());
 Console.WriteLine($"Finished parsing in {elapsedTime.Milliseconds} ms ({elapsedTime.Ticks} ticks)");
