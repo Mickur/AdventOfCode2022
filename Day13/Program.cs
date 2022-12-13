@@ -5,17 +5,17 @@ Console.WriteLine("Mickur's Advent of Code 2022 - Day 13!");
 
 // Setup
 var input = File.ReadAllLines("input.txt");
-var ParsedInput = new List<object>();
-var PartOneAnswer = 0;
-var PartTwoAnswer = 0;
+var parsedInput = new List<object>();
+var partOneAnswer = 0;
+var partTwoAnswer = 0;
 
 var startTime = Stopwatch.GetTimestamp();
 
 // Parsing
-foreach (var line in input)
+for (var i = 0; i < input.Length; i++)
 {
-    if(!string.IsNullOrWhiteSpace(line))
-        ParsedInput.Add(ParseArray(line));
+    if(!string.IsNullOrWhiteSpace(input[i]))
+        parsedInput.Add(ParseArray(input[i]));
 }
 
 var elapsedTime = Stopwatch.GetElapsedTime(startTime, Stopwatch.GetTimestamp());
@@ -23,108 +23,89 @@ Console.WriteLine($"Finished parsing in {elapsedTime.Milliseconds} ms ({elapsedT
 startTime = Stopwatch.GetTimestamp();
 
 // Part One
-var rightIndicies = new List<int>();
+var inputsInRightOrder = new List<int>();
 
-for (var i = 0; i < ParsedInput.Count; i += 2)
+for (var i = 0; i < parsedInput.Count; i += 2)
 {
-    var leftObjects = ParsedInput[i];
-    var rightObjects = ParsedInput[i + 1];
-
-    var result = CompareArrays((List<object>) leftObjects, (List<object>) rightObjects);
+    var result = CompareArrays((List<object>) parsedInput[i], (List<object>) parsedInput[i + 1]);
     
     if (result == -1)
     {
-        rightIndicies.Add((i / 2) + 1);
+        inputsInRightOrder.Add((i / 2) + 1);
     }
 }
 
-PartOneAnswer = rightIndicies.Sum();
+partOneAnswer = inputsInRightOrder.Sum();
 
 elapsedTime = Stopwatch.GetElapsedTime(startTime, Stopwatch.GetTimestamp());
 Console.WriteLine($"Finished part one in {elapsedTime.Milliseconds} ms ({elapsedTime.Ticks} ticks)");
 startTime = Stopwatch.GetTimestamp();
 
-// Part Two
-/*var newStuff = new List<object>();
-foreach (var line in input)
+var divider1 = ParseArray("[[2]]");
+var divider2 = ParseArray("[[6]]");
+
+parsedInput.Add(divider1);
+parsedInput.Add(divider2);
+
+parsedInput.Sort((arr1, arr2) => CompareArrays((List<object>)arr1, (List<object>)arr2));
+
+for (var i = 0; i < parsedInput.Count; i++)
 {
-    if(!string.IsNullOrWhiteSpace(line))
-        newStuff.Add(ParseArray(line));
-}*/
-
-var div1 = ParseArray("[[2]]");
-var div2 = ParseArray("[[6]]");
-
-//newStuff.Add(div1);
-//newStuff.Add(div2);
-
-ParsedInput.Add(div1);
-ParsedInput.Add(div2);
-
-ParsedInput.Sort(delegate(object arr1, object arr2)
-{
-    return CompareArrays((List<object>) arr1, (List<object>) arr2);
-});
-
-var div1Index = 0;
-var div2Index = 0;
-
-for (int i = 0; i < ParsedInput.Count; i++)
-{
-    if (ParsedInput[i] == div1)
+    if (parsedInput[i] == divider1)
     {
-        div1Index = i + 1;
+        partTwoAnswer = i + 1;
     }
     
-    if (ParsedInput[i] == div2)
+    if (parsedInput[i] == divider2)
     {
-        div2Index = i + 1;
+        partTwoAnswer *= i + 1;
+        break;
     }
 }
-
-PartTwoAnswer = div1Index * div2Index;
 
 elapsedTime = Stopwatch.GetElapsedTime(startTime, Stopwatch.GetTimestamp());
 Console.WriteLine($"Finished part two in {elapsedTime.Milliseconds} ms ({elapsedTime.Ticks} ticks)");
 
-Console.WriteLine($"Part One answer: {PartOneAnswer}");
-Console.WriteLine($"Part Two answer: {PartTwoAnswer}");
+Console.WriteLine($"Part One answer: {partOneAnswer}");
+Console.WriteLine($"Part Two answer: {partTwoAnswer}");
 
 List<object> ParseArray(ReadOnlySpan<char> span)
 {
     var depth = 0;
     var objects = new List<object>();
 
-    var tempstring = "";
+    var intStartIndex = 0;
+    var intLength = 0;
 
     for (var i = 0; i < span.Length; i++)
     {
-        char currChar = span[i];
-        
         // int is complete, parse it and save it!
-        if (currChar == ',' || currChar == ']')
+        if (span[i] == ',' || span[i] == ']')
         {
-            if (tempstring != "")
+            if (intStartIndex > 0)
             {
-                var value = AoCParsing.FastIntParse(tempstring);
+                var value = AoCParsing.FastIntParse(span.Slice(intStartIndex, intLength));
                 objects.Add(value);
-                tempstring = "";
+                
+                // Reset
+                intStartIndex = 0;
+                intLength = 0;
             }
         }
         
-        if (currChar == '[') // This is our array!
+        if (span[i] == '[') // This is our array!
         {
             // If we find a new array on our level, parse it!
             if (depth == 1)
             {
-                var toAdd = ParseArray(span.Slice(i));
+                var toAdd = ParseArray(span[i..]);
                 objects.Add(toAdd);
             }
             
             depth++;
         }
         
-        if (currChar == ']') // This is our array!
+        if (span[i] == ']') // This is our array!
         {
             if (depth == 1)
                 return objects;
@@ -132,16 +113,19 @@ List<object> ParseArray(ReadOnlySpan<char> span)
             depth--;
         }
         
-        if (char.IsDigit(currChar) && depth == 1)
+        if (char.IsDigit(span[i]) && depth == 1)
         {
-            tempstring += currChar;
+            if (intStartIndex == 0)
+                intStartIndex = i;
+
+            intLength++;
         }
     }
 
     return objects;
 }
 
-int CompareArrays(List<object> array1, List<object> array2)
+int CompareArrays(IReadOnlyList<object> array1, IReadOnlyList<object> array2)
 {
     var maxLength = Math.Max(array1.Count, array2.Count);
     
