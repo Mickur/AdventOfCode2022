@@ -35,17 +35,17 @@ class Derp
 {
     private Dictionary<(int, int), char> slice = new ();
 
-    private int minX = 0;
-    private int maxX = 0;
-    private int minY = 0;
-    private int maxY = 0;
+    private int _minX = 0;
+    private int _maxX = 0;
+    private readonly int _minY = 0;
+    private readonly int _maxY = 0;
 
     public Derp(string[] input, int sandX, int sandY)
     {
-        minX = sandX;
-        maxX = sandX;
-        minY = sandY;
-        maxY = sandY;
+        _minX = sandX;
+        _maxX = sandX;
+        _minY = sandY;
+        _maxY = sandY;
         
         foreach (var line in input)
         {
@@ -57,15 +57,15 @@ class Derp
             
             slice.TryAdd((previousX, previousY), '#');
             
-            if (previousX < minX)
-                minX = previousX;
-            else if (previousX > maxX)
-                maxX = previousX;
+            if (previousX < _minX)
+                _minX = previousX;
+            else if (previousX > _maxX)
+                _maxX = previousX;
                 
-            if (previousY < minY)
-                minY = previousY;
-            else if (previousY > maxY)
-                maxY = previousY;
+            if (previousY < _minY)
+                _minY = previousY;
+            else if (previousY > _maxY)
+                _maxY = previousY;
             
             for(var i = 1; i < steps.Length; i++)
             {
@@ -73,15 +73,15 @@ class Derp
                 var x = AoCParsing.FastIntParse(coords[0]);
                 var y = AoCParsing.FastIntParse(coords[1]);
                 
-                if (x < minX)
-                    minX = x;
-                else if (x > maxX)
-                    maxX = x;
+                if (x < _minX)
+                    _minX = x;
+                else if (x > _maxX)
+                    _maxX = x;
 
-                if (y < minY)
-                    minY = y;
-                else if (y > maxY)
-                    maxY = y;
+                if (y < _minY)
+                    _minY = y;
+                else if (y > _maxY)
+                    _maxY = y;
 
                 // Same X position
                 if (x == previousX)
@@ -135,16 +135,16 @@ class Derp
             // If outside of grid, we're free falling in part one
             if (!partTwo)
             {
-                if (x < minX || x > maxX || y < minY || y > maxY) return (-1, -1);
+                if (x < _minX || x > _maxX || y < _minY || y > _maxY) return (-1, -1);
             }
 
             // We hit imaginary floor
-            if (partTwo && y + 1 == maxY + 2)
+            if (partTwo && y + 1 == _maxY + 2)
             {
                 // If we can't move any more, add location to slice
                 slice[(x, y)] = 'o';
-                if (x < minX) minX = x;
-                if (x > maxX) maxX = x;
+                if (x < _minX) _minX = x;
+                if (x > _maxX) _maxX = x;
                 return (x, y);
             }
             
@@ -179,9 +179,9 @@ class Derp
 
     public void DrawSlice()
     {
-        for (var y = minY; y <= maxY + 1; y++)
+        for (var y = _minY; y <= _maxY + 1; y++)
         {
-            for (var x = minX; x <= maxX; x++)
+            for (var x = _minX; x <= _maxX; x++)
             {
                 if(slice.TryGetValue((x, y), out var result))
                     Console.Write(result);
