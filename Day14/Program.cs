@@ -130,47 +130,50 @@ class Derp
 
     public (int, int) SimulateSand(int x, int y, bool partTwo = false)
     {
-        if (!partTwo)
+        while (true)
         {
-            // If outside of grid, we're free falling
-            if (x < minX || x > maxX || y < minY || y > maxY)
-                return (-1, -1);
-        }
-        
-        // We hit imaginary floor
-        if (partTwo && y + 1 == maxY + 2)
-        {
-            // If we can't move any more, add location to slice
-            slice[(x, y)] = 'o';
-            if (x < minX)
-                minX = x;
-            if (x > maxX)
-                maxX = x;
-            return (x, y);
-        }
-        else if (slice.ContainsKey((x, y + 1))) // Added imaginary floor
-        {
+            // If outside of grid, we're free falling in part one
+            if (!partTwo)
+            {
+                if (x < minX || x > maxX || y < minY || y > maxY) return (-1, -1);
+            }
+
+            // We hit imaginary floor
+            if (partTwo && y + 1 == maxY + 2)
+            {
+                // If we can't move any more, add location to slice
+                slice[(x, y)] = 'o';
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                return (x, y);
+            }
+            
             // We hit something
-            // Can we move down to the left?
-            if (!slice.ContainsKey((x - 1, y + 1)))
+            if (slice.ContainsKey((x, y + 1)))
             {
-                return SimulateSand(x - 1, y + 1, partTwo);
+                // Can we move down to the left?
+                if (!slice.ContainsKey((x - 1, y + 1)))
+                {
+                    x -= 1;
+                    y += 1;
+                    continue;
+                }
+
+                // Can we move down to the right?
+                if (!slice.ContainsKey((x + 1, y + 1)))
+                {
+                    x += 1;
+                    y += 1;
+                    continue;
+                }
+
+                // If we can't move any more, add location to slice
+                slice[(x, y)] = 'o';
+                return (x, y);
             }
             
-            // Can we move down to the right?
-            if (!slice.ContainsKey((x + 1, y + 1)))
-            {
-                return SimulateSand(x + 1, y + 1, partTwo);
-            }
-            
-            // If we can't move any more, add location to slice
-            slice[(x, y)] = 'o';
-            return (x, y);
-        }
-        else
-        {
             // Continue falling down
-            return SimulateSand(x, y + 1, partTwo);
+            y += 1;
         }
     }
 
