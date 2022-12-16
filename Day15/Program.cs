@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Numerics;
 using AoCUtils;
 
 Console.WriteLine("Mickur's Advent of Code 2022 - Day 15!");
@@ -92,9 +91,9 @@ int PartOne(int y)
     return counter;
 }
 
-BigInteger PartTwo(int size)
+long PartTwo(int size)
 {
-    BigInteger returnValue = -1;
+    long returnValue = -1;
     
     var cts = new CancellationTokenSource();
     try
@@ -126,10 +125,7 @@ BigInteger PartTwo(int size)
 
                 if (!inRange)
                 {
-                    BigInteger bigX = x;
-                    BigInteger bigY = y;
-                    BigInteger bigMultiplier = 4000000;
-                    returnValue = bigX * bigMultiplier + bigY;
+                    returnValue = x * 4000000L + y;
                     cts.Cancel();
                 }
 
